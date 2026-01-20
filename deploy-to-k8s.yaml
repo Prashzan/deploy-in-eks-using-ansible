@@ -1,0 +1,29 @@
+# Do the export first so that we don't have to define kubeconfig attribute below
+# EXPORT K8S_AUTH_KUBECONFIG = /----absolute-path----/kubeconfig_myapp-eks-cluster
+
+---
+- name: Deploy app in new namespace
+# we are using localhost cuz we are executing ansible locally but we are connecting to eks cluster.
+# We don't need specific worker node hosts or k8 cluster endpoint, cuz we gonna define these seperatley
+  hosts: localhost
+  tasks:
+    - name: Create a k8s namespace
+      kubernetes.core.k8s:
+        name: my-app
+        api_version: v1
+        kind: Namespace
+        state: present
+        #kubeconfig: /----absolute-path----/kubeconfig_myapp-eks-cluster 
+    - name: Deploy nginx app 
+      kubernetes.core.k8s:
+        src: ./nginx-config.yaml
+        state: present
+        namespace: my-app
+        #kubeconfig: /----absolute-path----/kubeconfig_myapp-eks-cluster
+
+        # It would be very inconvenient to use kuebconfig attribute in every single task
+        # We can define kubeconfig attribute once and basically use for the whole playbook.
+        # We can do that using K8S_AUTH_KUBECONFIG environment varibale
+        # EXPORT K8S_AUTH_KUBECONFIG = /----absolute-path----/kubeconfig_myapp-eks-cluster
+
+
