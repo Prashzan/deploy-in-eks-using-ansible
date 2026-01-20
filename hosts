@@ -1,0 +1,6 @@
+We don't need anything inside hosts file since all authentication is done using kubeconfig. 
+We are deploying in eks so no ssh is needed, no remote hosts.
+Ansible is not managing hosts.
+It is managing Kubernetes objects via the Kubernetes API.
+
+So there is nothing for inventory to describe.
